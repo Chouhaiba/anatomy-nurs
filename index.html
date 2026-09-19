@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<title>Anatomie Nurse</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}
+header{padding:24px 18px 12px;background:white;position:sticky;top:0;z-index:2}.brand{font-size:28px;font-weight:800}.sub{color:#667085;margin-top:5px}
+main{padding:18px 16px 100px;max-width:720px;margin:auto}.card{background:white;border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 3px 14px #0000000b}
+button,.tab{border:0;border-radius:14px;padding:13px 16px;font-size:15px;font-weight:650;background:#eaf1ff;color:#1456c7}.primary{background:#2563eb;color:white}.choice{display:block;width:100%;text-align:left;margin:9px 0;background:white;border:1px solid #e2e7ef;color:#172033}.correct{background:#dcfce7!important;border-color:#22c55e!important}.wrong{background:#fee2e2!important;border-color:#ef4444!important}
+h1,h2,h3{margin:6px 0 10px}.muted{color:#667085}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.icon{font-size:28px}.progress{height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden}.bar{height:100%;background:#2563eb;width:0}.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;padding:9px max(8px,env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom));z-index:3}.tab{background:transparent;color:#667085;padding:8px}.tab.active{color:#2563eb;background:#edf3ff}.hidden{display:none}input{width:100%;padding:13px;border:1px solid #dfe4ec;border-radius:13px;font-size:16px;margin-bottom:12px}
+</style></head>
+<body>
+<header><div class="brand">🩺 Anatomie Nurse</div><div class="sub">Réviser l’anatomie pour les soins infirmiers</div></header>
+<main id="app"></main>
+<nav class="bottom">
+<button class="tab active" onclick="show('home',this)">🏠<br>Accueil</button>
+<button class="tab" onclick="show('courses',this)">📚<br>Cours</button>
+<button class="tab" onclick="show('quiz',this)">📝<br>QCM</button>
+<button class="tab" onclick="show('flash',this)">🧠<br>Flashcards</button>
+<button class="tab" onclick="show('progress',this)">📊<br>Progression</button>
+</nav>
+<script>
+const courses=[
+["Introduction à l’anatomie","figure","Repères, plans, axes et vocabulaire.",["Position anatomique : corps debout, regard vers l’avant, bras le long du corps et paumes vers l’avant.","Plans : sagittal (droite/gauche), frontal (avant/arrière), transversal (haut/bas).","Termes : antérieur, postérieur, supérieur, inférieur, médial, latéral, proximal et distal."]],
+["Système cardiovasculaire","❤️","Cœur, vaisseaux et circulation.",["Le cœur possède quatre cavités : deux oreillettes et deux ventricules.","La petite circulation relie le cœur aux poumons ; la grande circulation distribue le sang aux tissus.","Les artères partent généralement du cœur, les veines y ramènent le sang."]],
+["Système respiratoire","🫁","Voies respiratoires, poumons et échanges.",["L’air passe notamment par le nez, le pharynx, le larynx, la trachée et les bronches.","Les poumons sont situés dans la cage thoracique et entourés par les plèvres.","Les échanges gazeux ont principalement lieu au niveau des alvéoles."]],
+["Système nerveux","🧠","Encéphale, moelle et nerfs.",["Le système nerveux central comprend l’encéphale et la moelle épinière.","L’encéphale comprend notamment le cerveau, le cervelet et le tronc cérébral.","Le système nerveux périphérique relie le système nerveux central au reste de l’organisme."]],
+["Système osseux","🦴","Squelette, os et articulations.",["Le squelette soutient le corps et protège plusieurs organes.","On distingue notamment les os longs, courts, plats et irréguliers.","Les articulations unissent les os et permettent différents mouvements."]],
+["Système digestif","🍽️","Tube digestif et organes associés.",["Le trajet comprend notamment bouche, pharynx, œsophage, estomac, intestin grêle et gros intestin.","Le foie, la vésicule biliaire et le pancréas participent aux fonctions digestives.","L’intestin grêle joue un rôle majeur dans la digestion et l’absorption des nutriments."]]
+];
+const qs=[
+["Combien de cavités possède le cœur ?",["2","3","4","5"],2,"Deux oreillettes et deux ventricules."],
+["Où ont principalement lieu les échanges gazeux ?",["Trachée","Alvéoles","Larynx","Pharynx"],1,"Les échanges gazeux ont principalement lieu dans les alvéoles pulmonaires."],
+["Le système nerveux central comprend :",["Cœur et nerfs","Cerveau uniquement","Encéphale et moelle épinière","Muscles et nerfs"],2,"Le SNC comprend l’encéphale et la moelle épinière."],
+["Quel vaisseau ramène généralement le sang vers le cœur ?",["Veine","Artère","Capillaire","Alvéole"],0,"Les veines ramènent généralement le sang vers le cœur."],
+["Quel organe fait partie du tube digestif ?",["Poumon","Estomac","Cœur","Trachée"],1,"L’estomac fait partie du tube digestif."],
+["Le plan frontal sépare principalement :",["Droite/gauche","Haut/bas","Avant/arrière","Proximal/distal"],2,"Le plan frontal sépare les parties antérieure et postérieure."],
+["Quel est un rôle important du squelette ?",["Digestion","Soutien et protection","Échanges gazeux","Pomper le sang"],1,"Le squelette assure notamment le soutien et la protection."],
+["Quelle structure appartient aux voies respiratoires ?",["Trachée","Foie","Rein","Pancréas"],0,"La trachée appartient aux voies respiratoires."]
+];
+const flash=[["Antérieur","Situé vers l’avant du corps."],["Postérieur","Situé vers l’arrière du corps."],["Proximal","Plus proche du point d’attache d’un membre."],["Distal","Plus éloigné du point d’attache d’un membre."],["Artère","Vaisseau qui conduit généralement le sang depuis le cœur."],["Veine","Vaisseau qui ramène généralement le sang vers le cœur."],["Alvéole","Petite structure pulmonaire où ont lieu les échanges gazeux."]];
+let completed=JSON.parse(localStorage.getItem("completed")||"[]"), fav=JSON.parse(localStorage.getItem("fav")||"[]"),best=+localStorage.getItem("best")||0,quizIndex=0,score=0,selected=null,flashIndex=0,flipped=false;
+
+function save(){localStorage.setItem("completed",JSON.stringify(completed));localStorage.setItem("fav",JSON.stringify(fav));localStorage.setItem("best",best)}
+function show(page,el){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");render(page)}
+function render(page){
+let a=document.getElementById("app");
+if(page==="home")a.innerHTML=`<h1>Bonjour 👋</h1><p class=muted>Bienvenue dans ton espace de révision.</p><div class=card><h2>Ta progression</h2><p>${completed.length}/${courses.length} cours terminés</p><div class=progress><div class=bar style="width:${completed.length/courses.length*100}%"></div></div><p class=muted>Meilleur score QCM : ${best}/${qs.length}</p></div><h2>Systèmes</h2><div class=grid>${courses.map((c,i)=>`<div class=card onclick="course(${i})"><div class=icon>${c[1]}</div><b>${c[0]}</b><p class=muted>${c[2]}</p></div>`).join("")}</div>`;
+if(page==="courses")a.innerHTML=`<h1>Cours d’anatomie</h1><input placeholder="Rechercher..." oninput="filterCourses(this.value)"><div id=list>${courseCards(courses)}</div>`;
+if(page==="quiz")quiz();
+if(page==="flash")flashcard();
+if(page==="progress")a.innerHTML=`<h1>Ma progression</h1><div class=card><h2>Cours</h2><p>${completed.length} / ${courses.length}</p><div class=progress><div class=bar style="width:${completed.length/courses.length*100}%"></div></div></div><div class=card><h2>QCM</h2><p>Meilleur score : ${best} / ${qs.length}</p><div class=progress><div class=bar style="width:${best/qs.length*100}%"></div></div></div><div class=card><h2>Favoris</h2><p>${fav.length} cours favori(s)</p></div>`;
+}
+function courseCards(arr){return arr.map((c,i)=>`<div class=card onclick="course(${courses.indexOf(c)})"><span class=icon>${c[1]}</span><h3>${c[0]}</h3><p class=muted>${c[2]}</p></div>`).join("")}
+function filterCourses(v){document.getElementById("list").innerHTML=courseCards(courses.filter(c=>c[0].toLowerCase().includes(v.toLowerCase())||c[2].toLowerCase().includes(v.toLowerCase())))}
+function course(i){let c=courses[i],done=completed.includes(i),isfav=fav.includes(i);document.getElementById("app").innerHTML=`<button onclick="render('courses')">← Retour</button><div class=card><div class=icon>${c[1]}</div><h1>${c[0]}</h1><p class=muted>${c[2]}</p></div>${c[3].map((s)=>`<div class=card><h2>${s.split(":")[0]}</h2><p>${s}</p></div>`).join("")}<button class=primary onclick="toggleDone(${i})">${done?"✅ Cours terminé":"Marquer comme terminé"}</button> <button onclick="toggleFav(${i})">${isfav?"⭐ Favori":"☆ Ajouter aux favoris"}</button>`}
+function toggleDone(i){if(completed.includes(i))completed=completed.filter(x=>x!==i);else completed.push(i);save();course(i)}
+function toggleFav(i){if(fav.includes(i))fav=fav.filter(x=>x!==i);else fav.push(i);save();course(i)}
+function quiz(){let a=document.getElementById("app");if(quizIndex>=qs.length){best=Math.max(best,score);save();a.innerHTML=`<div class=card><h1>🎉 QCM terminé</h1><h2>Score : ${score}/${qs.length}</h2><p>${score===qs.length?"Excellent !":score>=5?"Très bon travail !":"Continue à réviser et réessaie."}</p><button class=primary onclick="quizIndex=0;score=0;selected=null;quiz()">Recommencer</button></div>`;return}let q=qs[quizIndex];a.innerHTML=`<h1>QCM</h1><p class=muted>Question ${quizIndex+1} / ${qs.length}</p><div class=progress><div class=bar style="width:${(quizIndex+1)/qs.length*100}%"></div></div><div class=card><h2>${q[0]}</h2>${q[1].map((x,i)=>`<button class="choice ${selected!==null?(i===q[2]?"correct":i===selected?"wrong":""):""}" onclick="answer(${i})">${x}</button>`).join("")}${selected!==null?`<p><b>${selected===q[2]?"Bonne réponse ✅":"Réponse incorrecte ❌"}</b><br>${q[3]}</p><button class=primary onclick="quizIndex++;selected=null;quiz()">${quizIndex===qs.length-1?"Voir le résultat":"Question suivante"}</button>`:""}</div>`}
+function answer(i){if(selected!==null)return;selected=i;if(i===qs[quizIndex][2])score++;quiz()}
+function flashcard(){let f=flash[flashIndex];document.getElementById("app").innerHTML=`<h1>Flashcards</h1><p class=muted>Appuie sur la carte pour retourner.</p><div class=card style="min-height:240px;text-align:center;display:flex;flex-direction:column;justify-content:center" onclick="flipped=!flipped;flashcard()"><p class=muted>${flipped?"Réponse":"Terme"}</p><h2>${flipped?f[1]:f[0]}</h2></div><p style="text-align:center">${flashIndex+1} / ${flash.length}</p><button onclick="flashIndex=(flashIndex-1+flash.length)%flash.length;flipped=false;flashcard()">← Précédente</button> <button class=primary onclick="flashIndex=(flashIndex+1)%flash.length;flipped=false;flashcard()">Suivante →</button>`}
+render("home");
+</script></body></html>
